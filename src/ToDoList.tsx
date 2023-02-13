@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 
 // function ToDoList() {
@@ -27,30 +27,47 @@ import { useForm } from 'react-hook-form';
 // }
 
 function ToDoList(){
-    const { register, watch } = useForm();
-    console.log(watch());
+    const { register, watch, handleSubmit, formState } = useForm();
+    //console.log(watch());
+    const onValid = (data:any) => {
+        console.log(data);
+    }
+    console.log(formState.errors);
+
     return (
-            <form>
+            <form onSubmit={handleSubmit(onValid)}>
                 <input 
-                    {...register("email")}
+                    {...register("email", { required:true })}
                     type="text" 
                     placeholder='Email'
                 />
                 <br />
                 <input 
-                    {...register("name")}
+                    {...register("name", { 
+                        required:true, 
+                        minLength: 10 
+                    })}
                     type="text" 
                     placeholder='Name'
                 />
                 <br />
                 <input 
-                    {...register("password")}
+                    {...register("password", { 
+                        required:true,
+                        minLength: {
+                            value : 5,
+                            message: "비밀번호가 너무 짧습니다."
+                        }
+                    })}
                     type="password" 
                     placeholder='Password'
                 />
                 <br />
                 <input 
-                    {...register("passwordConfirm")}
+                    {...register("passwordConfirm", {
+                        required: "비밀번호를 입력하세요",
+                        minLength: 5 
+                    })}
                     type="password" 
                     placeholder='PasswordConfirm'
                 />
