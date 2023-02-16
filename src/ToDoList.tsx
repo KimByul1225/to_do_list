@@ -94,6 +94,7 @@ function ToDoList(){
                         validate: {
                             noKim : (value) => value.includes("kim") ? "kim은 가입할 수 없습니다" : true,
                             noLee : (value) => value.includes("lee") ? "lee는 가입할 수 없습니다" : true,
+                            //여러조건도 가능
                         },
                         minLength: {
                             value : 3,
