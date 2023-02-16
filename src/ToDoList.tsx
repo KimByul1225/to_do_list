@@ -32,21 +32,27 @@ type IFormData = {
         };
     };
     name: string;
+    nickName: string;
     email: string;
     password: string;
     passwordConfirm: string;
+    extraError?: string;
 };
 function ToDoList(){
-    const { register, watch, handleSubmit, formState: {errors}} = useForm<IFormData>({
+    const { register, watch, handleSubmit, formState: {errors}, setError} = useForm<IFormData>({
         defaultValues: {
             email: "@naver.com"
         }
     });
     //console.log(watch());
-    const onValid = (data:any) => {
-        console.log(data);
+    const onValid = (data:IFormData) => {
+        if(data.password !== data.passwordConfirm){
+            setError("password", {message: "비밀번호가 서로 다릅니다."}, {shouldFocus: true})
+        }
+        //setError("extraError", {message: "서버 에러가 발생했습니다."})
+        //console.log(data);
     }
-   // console.log(errors);
+    console.log(errors);
 
     return (
             <form onSubmit={handleSubmit(onValid)}>
@@ -69,13 +75,36 @@ function ToDoList(){
                 <input 
                     {...register("name", { 
                         required: "이름을 적어주세요", 
-                        minLength: 5 
+                        validate: (value) => value.includes("kim") ? "kim은 가입할 수 없습니다" : true,
+                        minLength: {
+                            value : 3,
+                            message: "이름이 너무 짧습니다."
+                        } 
                     })}
                     type="text" 
                     placeholder='Name'
                 />
                 <span>
                     {errors.name?.message}
+                </span>
+                <br />
+                <input 
+                    {...register("nickName", { 
+                        required: "닉네임을 적어주세요", 
+                        validate: {
+                            noKim : (value) => value.includes("kim") ? "kim은 가입할 수 없습니다" : true,
+                            noLee : (value) => value.includes("lee") ? "lee는 가입할 수 없습니다" : true,
+                        },
+                        minLength: {
+                            value : 3,
+                            message: "닉네임이 너무 짧습니다."
+                        } 
+                    })}
+                    type="text" 
+                    placeholder='Name'
+                />
+                <span>
+                    {errors.nickName?.message}
                 </span>
                 <br />
                 <input 
@@ -108,8 +137,9 @@ function ToDoList(){
                     {errors.passwordConfirm?.message}
                 </span>
                 <button>button</button>
+                <span>{errors?.extraError?.message}</span>
             </form>
-            
+
     );
 }
 
